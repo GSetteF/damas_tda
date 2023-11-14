@@ -55,15 +55,15 @@ void menu(){
 			iniciar_partida();
 		case 2:
 			exibir_registros();
-			menu();
+			break;
 		case 3:
 			exibir_instrucoes();
-			menu();
+			break;
 		case 4:
 			break;
 		default:
 			puts("Insira um comando válido!");
-			menu();
+			break;
 	}
 }
 
@@ -84,50 +84,56 @@ int verificar_jogada (int jogador, int i_origem, int j_origem, int i_destino, in
 	int distancia_i = abs(i_destino-i_origem);
 	int distancia_j = abs(j_destino-j_origem);
 	
-	if(tabuleiro[i_origem][j_origem].jogador != jogador){
-		puts("Movimento inválido! você tentou mover a peça de outro jogador. \n");
-		return(0);
-	}
-	else if(tabuleiro[i_destino][j_destino].jogador != 0){
-		puts("Movimento inválido! você tentou mover a peça para um espaço já ocupado. \n");
-		return(0);
-	}
-	else if((i_origem == i_destino)||(j_origem == j_destino)){
-		puts("Movimento inválido! você tentou mover a peça em uma direção não permitida. \n");
-		return(0);
-	}
-	else if((jogador == 1 && i_origem <= i_destino)||(jogador == 2 && i_origem >= i_destino)){
-		puts("Movimento inválido! você tentou mover a peça na direção contrária. \n");
-		return(0);
-	}
-	else if(j_destino > 7 || j_destino < 0 || i_destino > 7 || i_destino < 0){
-		puts("Movimento inválido! você tentou mover a peça para uma posição que não existe. \n");
-		return(0);
+	//verificando se a peca movida é do tipo P
+	if(tabuleiro[i_origem][j_origem].tipo == 'P'){
+	
+		if(tabuleiro[i_origem][j_origem].jogador != jogador){
+			puts("Movimento inválido! você tentou mover a peça de outro jogador. \n");
+			return(0);
 		}
-	else if(distancia_i > 2 || distancia_j > 2 || distancia_i == 2 && distancia_j == 1 || distancia_i == 1 && distancia_j == 2){
-		puts("Movimento inválido! você tentou mover a peça para uma posição muito distante. \n");
-		return(0);
+		else if(tabuleiro[i_destino][j_destino].jogador != 0){
+			puts("Movimento inválido! você tentou mover a peça para um espaço já ocupado. \n");
+			return(0);
+		}
+		else if((i_origem == i_destino)||(j_origem == j_destino)){
+			puts("Movimento inválido! você tentou mover a peça em uma direção não permitida. \n");
+			return(0);
+		}
+		else if((jogador == 1 && i_origem <= i_destino)||(jogador == 2 && i_origem >= i_destino)){
+			puts("Movimento inválido! você tentou mover a peça na direção contrária. \n");
+			return(0);
+		}
+		else if(j_destino > 7 || j_destino < 0 || i_destino > 7 || i_destino < 0){
+			puts("Movimento inválido! você tentou mover a peça para uma posição que não existe. \n");
+			return(0);
+			}
+		else if(distancia_i > 2 || distancia_j > 2 || distancia_i == 2 && distancia_j == 1 || distancia_i == 1 && distancia_j == 2){
+			puts("Movimento inválido! você tentou mover a peça para uma posição muito distante. \n");
+			return(0);
+		}
+		else if (distancia_i == 2){ //capturando uma peca
+			//posicao da peca capturada
+			int i_peca_capturada = (i_origem+i_destino)/2;
+			int j_peca_capturada = (j_origem+j_destino)/2;
+			tabuleiro[i_peca_capturada][j_peca_capturada] = vazio;
+			tabuleiro[i_destino][j_destino] = tabuleiro[i_origem][j_origem];
+			tabuleiro[i_origem][j_origem] = vazio;
+			return(1);
+		}
+		else{ //movendo uma peca para um espaco vazio
+			tabuleiro[i_destino][j_destino] = tabuleiro[i_origem][j_origem];
+			tabuleiro[i_origem][j_origem] = vazio;
+			return(1);
+		}
 	}
-	else if (distancia_i == 2){ //capturando uma peca
-		//posicao da peca capturada
-		int i_peca_capturada = (i_origem+i_destino)/2;
-		int j_peca_capturada = (j_origem+j_destino)/2;
-		tabuleiro[i_peca_capturada][j_peca_capturada] = vazio;
-		tabuleiro[i_destino][j_destino] = tabuleiro[i_origem][j_origem];
-		tabuleiro[i_origem][j_origem] = vazio;
-		return(1);
-	}
-	else{ //movendo uma peca para um espaco vazio
-		tabuleiro[i_destino][j_destino] = tabuleiro[i_origem][j_origem];
-		tabuleiro[i_origem][j_origem] = vazio;
-		return(1);
+	else if(tabuleiro[i_origem][j_origem].tipo == 'D'){
+		puts("verificar movimento de damas, retornar 1 caso válido, retornar 0 caso inválido. Se atentar a implementar a captura");
 	}
 }
 
 int main(int argc, char *argv[]) {
 	//Comando para mudar a lingua
 	setlocale(LC_ALL, "Portuguese");
-	
 	
 	//Definindo nossas pecas
 	Pecas P1, P2, D1, D2, vazio;
@@ -207,24 +213,23 @@ int main(int argc, char *argv[]) {
 	
 	
 	char condicao_de_parada;
-	int jogador = 1;
+	int jogador_atual = 1;
 	int i_origem = 0, j_origem = 0, i_destino = 0, j_destino = 0;
 	int ver_jogada = 0;
 	
 	//Depois, melhor mudar essa verificacao por uma funcao que verifica
 	while (condicao_de_parada != 'V' || condicao_de_parada != 'E'){
-	
 		puts("Tabuleiro atual: \n");
 		exibir_matriz(tabuleiro);
 		puts("Escreva a posição da peça que deseja mover e então a posição para que deseja movê-la separados tudo por espaço.");
 		scanf("%d %d %d %d", &i_origem, &j_origem, &i_destino, &j_destino);
-		ver_jogada = verificar_jogada(jogador, i_origem, j_origem, i_destino, j_destino, tabuleiro, vazio);
+		ver_jogada = verificar_jogada(jogador_atual, i_origem, j_origem, i_destino, j_destino, tabuleiro, vazio);
 		if (ver_jogada == 1){
-			if (jogador == 1){
-				jogador = 2;
+			if (jogador_atual == 1){
+				jogador_atual = 2;
 			}
 			else{
-				jogador = 1;
+				jogador_atual = 1;
 			}
 		}
 	}
