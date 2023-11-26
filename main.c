@@ -273,7 +273,7 @@ void preencher_tabuleiro(Pecas tabuleiro[8][8] , Pecas P1, Pecas P2, Pecas vazio
             if (coluna%2 == 0){
                 
             tabuleiro[5][coluna] = P1;
-            tabuleiro[7][coluna] = P1;
+            tabuleiro[7][coluna] = vazio;
             }
             else{
                     tabuleiro[5][coluna] = vazio;
@@ -284,7 +284,7 @@ void preencher_tabuleiro(Pecas tabuleiro[8][8] , Pecas P1, Pecas P2, Pecas vazio
     for (coluna = 1; coluna < 8;coluna+=2){
             if (coluna%2 != 0){
                 
-            tabuleiro[6][coluna] = P1;
+            tabuleiro[6][coluna] = vazio;
             }
             else{
                     tabuleiro[6][coluna] = vazio;
@@ -323,19 +323,6 @@ void jogar_partida(){
         while (ver_fim == 0){
                 puts("Tabuleiro atual: \n");
                 exibir_matriz(tabuleiro);
-                ver_fim = verificar_fim(tabuleiro, P1, P2, vazio);
-                if (verificar_fim == 1){
-                	puts("Jogador 1 Venceu!");
-                	break;
-                }
-                else if (verificar_fim == 2){
-                	puts("Jogador 2 Venceu!");
-                	break;
-                }
-                else if (verificar_fim == 3){
-                	puts("O jogo terminou em empate :(");
-                	break;
-                }
                 puts("\nEscreva a posição da peça que deseja mover e então a posição para que deseja movê-la separados tudo por espaço.");
                 scanf("%d %d %d %d", &i_origem, &j_origem, &i_destino, &j_destino);
                 ver_jogada = verificar_jogada(jogador_atual, i_origem, j_origem, i_destino, j_destino, tabuleiro, vazio);
@@ -347,6 +334,20 @@ void jogar_partida(){
                                 jogador_atual = 1;
                         }
                 }
+                ver_fim = verificar_fim(tabuleiro, P1, P2, vazio);
+        }
+        
+        if (ver_fim == 1){
+        	exibir_matriz(tabuleiro);
+            puts("Jogador 1 Venceu!");
+        }
+        else if (ver_fim == 2){
+        	exibir_matriz(tabuleiro);
+            puts("Jogador 2 Venceu!");
+        }
+        else if (ver_fim == 3){
+        	exibir_matriz(tabuleiro);
+            puts("O jogo terminou em empate :(");
         }
 }
 
