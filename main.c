@@ -1,3 +1,11 @@
+//Trabalho unidade 2 tda, projetos de damas
+//professor: Leonardo
+//Grupo:
+//Gabriel Evangelista
+//Gabriel Sette
+//Matheus Sette
+//Sidney Braga
+
 //bibliotecas padrão
 #include <stdio.h>
 #include <stdlib.h>
@@ -273,7 +281,7 @@ void preencher_tabuleiro(Pecas tabuleiro[8][8] , Pecas P1, Pecas P2, Pecas vazio
             if (coluna%2 == 0){
                 
             tabuleiro[5][coluna] = P1;
-            tabuleiro[7][coluna] = vazio;
+            tabuleiro[7][coluna] = P1;
             }
             else{
                     tabuleiro[5][coluna] = vazio;
@@ -284,7 +292,7 @@ void preencher_tabuleiro(Pecas tabuleiro[8][8] , Pecas P1, Pecas P2, Pecas vazio
     for (coluna = 1; coluna < 8;coluna+=2){
             if (coluna%2 != 0){
                 
-            tabuleiro[6][coluna] = vazio;
+            tabuleiro[6][coluna] = P1;
             }
             else{
                     tabuleiro[6][coluna] = vazio;
